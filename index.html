@@ -1,0 +1,677 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Reza Helaleh — Full-Stack Developer building thoughtful digital products and web experiences.">
+  <meta name="theme-color" content="#090909">
+  <title>Reza Helaleh — Full-Stack Developer</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+  <style>
+    :root{
+      --black:#090909;
+      --white:#f4f4f1;
+      --muted:#999995;
+      --line:#30302e;
+      --paper:#e9e9e5;
+    }
+    *{box-sizing:border-box}
+    html{scroll-behavior:smooth}
+    body{
+      margin:0;
+      background:var(--black);
+      color:var(--white);
+      font-family:Arial,Helvetica,sans-serif;
+      -webkit-font-smoothing:antialiased;
+      font-size:19px;
+      line-height:1.7;
+      overflow-x:hidden;
+    }
+    a{color:inherit;text-decoration:none}
+    ::selection{background:var(--white);color:var(--black)}
+
+    #pixel-bg{
+      position:fixed;
+      inset:0;
+      width:100%;
+      height:100%;
+      z-index:0;
+      pointer-events:none;
+      opacity:0.22;
+      mix-blend-mode:screen;
+    }
+
+    .noise-overlay{position:relative}
+    .noise-overlay::before{
+      content:"";
+      position:absolute;
+      inset:0;
+      pointer-events:none;
+      z-index:1;
+      opacity:0.11;
+      background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+      background-size:140px;
+      mix-blend-mode:overlay;
+    }
+
+    main, header, footer{position:relative;z-index:2}
+
+    .mono{
+      font-family:"Courier New",Courier,monospace;
+      letter-spacing:.06em;
+      font-size:14px;
+    }
+
+    .topbar{
+      height:86px;
+      padding:0 6.2vw;
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      border-bottom:1px solid var(--line);
+      position:sticky;
+      top:0;
+      background:rgba(9,9,9,.9);
+      backdrop-filter:blur(12px);
+      z-index:100;
+    }
+    .wordmark{font-size:28px;font-weight:800;letter-spacing:-2px}
+    .wordmark span{color:#a6a69f}
+    nav{display:flex;gap:30px;align-items:center}
+    nav a{color:#b7b7b2;transition:color .25s}
+    nav a:hover,.top-cta:hover{color:white}
+    .top-cta{display:flex;align-items:center;gap:9px;border-bottom:1px solid #777;padding-bottom:8px}
+    .lang-toggle{
+      display:flex;align-items:center;gap:0;border:1px solid #555;overflow:hidden;
+      font-family:"Courier New",monospace;font-size:13px;letter-spacing:.05em;
+    }
+    .lang-toggle button{
+      background:transparent;border:none;color:#999;padding:10px 15px;cursor:pointer;transition:.2s;
+    }
+    .lang-toggle button.active{background:var(--white);color:var(--black)}
+    .lang-toggle button:hover:not(.active){color:white}
+
+    .hero{padding:44px 6.2vw 0}
+    .hero-kicker{display:flex;align-items:center;gap:12px;color:#b9b9b3}
+    .status-dot{
+      width:9px;height:9px;background:#b9c6a6;display:inline-block;
+      box-shadow:0 0 10px #b9c6a6;animation:pulse-dot 2.2s ease-in-out infinite;
+    }
+    @keyframes pulse-dot{
+      0%,100%{opacity:1;transform:scale(1)}
+      50%{opacity:.5;transform:scale(.8)}
+    }
+    .hero-grid{display:grid;grid-template-columns:1.25fr .75fr;gap:5vw;padding:75px 0 65px}
+    .eyebrow{color:#aaa;margin:0 0 26px}
+    h1{font-size:clamp(72px,11vw,165px);line-height:.83;letter-spacing:-.095em;margin:0;font-weight:800}
+    h1 span{color:#777772}
+    .hero-bottom{display:flex;align-items:end;justify-content:space-between;gap:28px;max-width:600px;margin-top:46px}
+    .hero-bottom p{color:#c4c4bc;max-width:460px;font-size:20px;line-height:1.75;margin:0}
+    .round-link{
+      width:56px;height:56px;flex:0 0 56px;border:1px solid #666;
+      display:grid;place-items:center;font-size:28px;transition:.25s;
+    }
+    .round-link:hover{background:var(--white);color:var(--black)}
+
+    .portrait-wrap{align-self:center;position:relative;padding:0 14px 22px 0}
+    .portrait-frame{position:relative;padding:12px;background:transparent}
+    .portrait-frame .pixel-border{position:absolute;inset:0;pointer-events:none;overflow:hidden}
+    .portrait-frame .pixel-border span{position:absolute;background:#6a6a64;opacity:0.7}
+    .portrait-frame .pb-tl{width:14px;height:2px;top:0;left:0}
+    .portrait-frame .pb-tl2{width:2px;height:14px;top:0;left:0}
+    .portrait-frame .pb-tr{width:14px;height:2px;top:0;right:0}
+    .portrait-frame .pb-tr2{width:2px;height:14px;top:0;right:0}
+    .portrait-frame .pb-bl{width:14px;height:2px;bottom:0;left:0}
+    .portrait-frame .pb-bl2{width:2px;height:14px;bottom:0;left:0}
+    .portrait-frame .pb-br{width:14px;height:2px;bottom:0;right:0}
+    .portrait-frame .pb-br2{width:2px;height:14px;bottom:0;right:0}
+
+    .portrait{
+      width:100%;aspect-ratio:4/5;object-fit:cover;display:block;
+      background:#20201e;filter:grayscale(100%) contrast(1.08);
+    }
+    .portrait-index{color:#858580;padding-top:14px;font-size:13px}
+    .side-note{
+      position:absolute;right:-24px;bottom:140px;writing-mode:vertical-rl;
+      color:#858580;font-size:13px;
+    }
+    [dir="rtl"] .side-note{right:auto;left:-24px;writing-mode:vertical-lr}
+
+    .hero-meta{
+      border-top:1px solid var(--line);border-bottom:1px solid var(--line);
+      display:grid;grid-template-columns:1fr 1fr 1fr auto;align-items:center;
+      gap:24px;min-height:108px;color:#aaa;
+    }
+    .hero-meta div{display:flex;flex-direction:column;gap:9px}
+    .hero-meta strong{color:var(--white);font-size:22px;letter-spacing:-.04em}
+    .hero-meta span{font-size:13px}
+    .hero-meta a{display:flex;align-items:center;gap:9px;color:white;font-size:13px}
+
+    .section-pad{padding:140px 6.2vw}
+    .section-label{
+      display:flex;align-items:center;gap:20px;color:#a5a59e;
+      border-bottom:1px solid var(--line);padding-bottom:20px;
+    }
+    .section-label span:first-child{color:white}
+    .about-grid{display:grid;grid-template-columns:1.1fr .9fr;gap:8vw;padding-top:72px}
+    h2{font-size:clamp(48px,6.5vw,94px);line-height:.97;letter-spacing:-.075em;margin:0;font-weight:800}
+    .about h2 span,.section-heading h2 span,.contact h2 span{color:#777772}
+    .about-text{max-width:580px}
+    .about-text p{color:#b4b4ac;font-size:19px;line-height:1.85}
+    .about-text .lead{color:var(--white);font-size:23px;line-height:1.65;margin-top:0}
+    .about-facts{margin-top:42px;border-top:1px solid var(--line)}
+    .about-facts div{display:flex;justify-content:space-between;gap:16px;padding:20px 0;border-bottom:1px solid var(--line)}
+    .about-facts span{font:14px "Courier New",monospace;color:#888}
+    .about-facts strong{font-size:16px;font-weight:600;text-align:right}
+
+    .work{background:var(--paper);color:var(--black)}
+    .work .section-label{border-color:#c7c7c1;color:#666}
+    .work .section-label span:first-child{color:#111}
+    .section-heading{display:flex;justify-content:space-between;align-items:end;gap:30px;padding:70px 0 60px}
+    .section-heading h2{font-size:clamp(44px,6vw,86px)}
+    .section-heading h2 span{color:#92928b}
+    .section-heading p{max-width:290px;color:#555;font-size:17px;line-height:1.8;margin:0 0 5px}
+    .project{display:grid;grid-template-columns:75px 1fr 190px;gap:30px;padding:46px 0;border-top:1px solid #c7c7c1}
+    .project:last-child{border-bottom:1px solid #c7c7c1}
+    .project-number{color:#777;padding-top:5px}
+    .project-type{color:#666;font-size:14px}
+    .project h3{font-size:clamp(28px,3.2vw,46px);letter-spacing:-.06em;margin:14px 0}
+    .project-main>p{max-width:680px;color:#444;font-size:18px;line-height:1.8}
+    .tag-list{display:flex;flex-wrap:wrap;gap:10px;margin-top:24px}
+    .tag-list span{border:1px solid #b8b8b1;padding:10px 14px;font-size:13px}
+    .project-action{display:flex;justify-content:end;align-items:start}
+    .project-action a{display:flex;gap:9px;align-items:center;border-bottom:1px solid #888;padding-bottom:9px;font:14px "Courier New",monospace}
+
+    .stack-heading{padding-bottom:50px}
+    .stack-grid{display:grid;grid-template-columns:repeat(2,1fr);border-top:1px solid var(--line);border-left:1px solid var(--line)}
+    .stack-group{min-height:210px;padding:32px;border-right:1px solid var(--line);border-bottom:1px solid var(--line);position:relative}
+    .stack-index{color:#777}
+    .stack-group h3{font:15px "Courier New",monospace;margin:32px 0 22px;color:#ddd}
+    .stack-items{display:flex;flex-wrap:wrap;gap:10px}
+    .stack-items span{background:#1b1b19;padding:12px 15px;color:#c5c5bf;font-size:15px;border:1px solid #2c2c2a}
+    .stack-note{color:#777;font-size:14px;line-height:1.8;margin-top:26px;letter-spacing:.02em}
+
+    .experience{background:#0c0c0c}
+    .timeline{margin-top:65px}
+    .timeline-row{display:grid;grid-template-columns:1fr 2fr 110px;gap:32px;padding:46px 0;border-top:1px solid var(--line)}
+    .timeline-row:last-child{border-bottom:1px solid var(--line)}
+    .timeline-date,.timeline-side{color:#85857f;font-size:14px}
+    .timeline-kind{color:#92928b;font-size:14px}
+    .timeline-content h3{font-size:28px;letter-spacing:-.04em;margin:14px 0 12px}
+    .timeline-content p{color:#aaa;font-size:17px;line-height:1.8;max-width:640px;margin:0}
+    .timeline-side{text-align:right}
+
+    .contact{padding-bottom:100px}
+    .contact-main{display:flex;align-items:end;justify-content:space-between;gap:32px;padding:75px 0 85px}
+    .contact h2{font-size:clamp(72px,11vw,155px)}
+    .contact-link{
+      display:inline-flex;align-items:center;gap:20px;border-bottom:2px solid #ccc;
+      padding:0 0 18px;font:20px "Courier New",monospace;letter-spacing:.04em;
+      white-space:nowrap;transition:border-color .25s, color .25s, text-shadow .25s;
+    }
+    .contact-link:hover{border-color:var(--white);color:var(--white)}
+    .contact-bottom{display:flex;justify-content:space-between;align-items:center;gap:30px;border-top:1px solid var(--line);padding-top:28px}
+    .contact-bottom p{color:#999;font-size:17px}
+    .socials{display:flex;flex-wrap:wrap;gap:24px}
+    .socials a{display:flex;align-items:center;gap:8px;font-size:14px;color:#bbb;transition:color .2s}
+    .socials a:hover{color:white}
+
+    footer{
+      border-top:1px solid var(--line);min-height:90px;padding:0 6.2vw;
+      display:flex;justify-content:space-between;align-items:center;gap:16px;
+      color:#777;font:13px "Courier New",monospace;
+    }
+    footer .wordmark{color:white;font:800 24px Arial,sans-serif}
+
+    .reveal{opacity:0;transform:translateY(36px)}
+    .reveal-left{opacity:0;transform:translateX(-36px)}
+    .reveal-right{opacity:0;transform:translateX(36px)}
+
+    @keyframes pixel-border-glow{
+      0%,100%{opacity:0.45}
+      50%{opacity:1}
+    }
+    .portrait-frame .pixel-border span{animation:pixel-border-glow 2.8s ease-in-out infinite}
+    .portrait-frame .pixel-border span:nth-child(odd){animation-delay:0.4s}
+    .portrait-frame .pixel-border span:nth-child(even){animation-delay:1.1s}
+
+    [dir="rtl"] body{font-family:Tahoma,Arial,sans-serif}
+    [dir="rtl"] .mono{font-family:"Courier New",monospace}
+    [dir="rtl"] .topbar,[dir="rtl"] .hero-meta,[dir="rtl"] .about-facts div,
+    [dir="rtl"] .section-heading,[dir="rtl"] .contact-main,[dir="rtl"] .contact-bottom,
+    [dir="rtl"] footer{direction:rtl}
+    [dir="rtl"] .hero-bottom{flex-direction:row-reverse}
+    [dir="rtl"] .project{grid-template-columns:190px 1fr 75px}
+    [dir="rtl"] .project-action{justify-content:start}
+    [dir="rtl"] .timeline-side{text-align:left}
+    [dir="rtl"] .about-facts strong{text-align:left}
+
+    @media(max-width:800px){
+      .topbar{padding:0 5vw;height:74px}
+      nav{gap:12px}nav a{font-size:13px}.top-cta{display:none}
+      .hero,.section-pad{padding-left:5vw;padding-right:5vw}
+      .hero-grid{grid-template-columns:1fr .65fr;gap:26px}
+      h1{font-size:clamp(60px,10.5vw,100px)}
+      .hero-meta{grid-template-columns:repeat(3,1fr);padding:22px 0}
+      .hero-meta>a{grid-column:1/-1;padding-top:8px}
+      .about-grid{gap:36px}
+      .timeline-row{grid-template-columns:1fr 2fr}.timeline-side{display:none}
+      .contact-link{font-size:17px}
+    }
+    @media(max-width:560px){
+      body{font-size:17px}
+      nav{gap:8px}nav a{font-size:12px}
+      .lang-toggle button{padding:8px 11px;font-size:12px}
+      .hero{padding-top:30px}
+      .hero-grid{grid-template-columns:1fr;padding-top:50px}
+      h1{font-size:clamp(54px,14.5vw,92px)}
+      .portrait-wrap{max-width:330px;margin:18px auto 0;width:86%}
+      .hero-meta{grid-template-columns:1fr 1fr;row-gap:22px}
+      .hero-meta div:last-of-type{grid-column:1/-1}
+      .section-pad{padding-top:95px;padding-bottom:95px}
+      .about-grid{grid-template-columns:1fr;padding-top:44px}
+      .about h2{font-size:50px}
+      .section-heading{display:block;padding:46px 0}
+      .section-heading p{margin-top:24px}
+      .project{grid-template-columns:42px 1fr;gap:16px}
+      [dir="rtl"] .project{grid-template-columns:1fr 42px}
+      .project-action{grid-column:2;justify-content:start}
+      .stack-grid{grid-template-columns:1fr}
+      .stack-group{min-height:165px}
+      .timeline-row{grid-template-columns:1fr;gap:18px}
+      .timeline-content h3{font-size:24px}
+      .contact-main{display:block;padding:50px 0}
+      .contact h2{font-size:58px}
+      .contact-link{width:fit-content;margin-top:38px;font-size:17px}
+      .contact-bottom{display:block}
+      .socials{flex-wrap:wrap;margin-top:26px}
+      footer{padding:24px 5vw;flex-wrap:wrap}
+      footer span:nth-of-type(1){display:none}
+      .hero-bottom p{font-size:18px}
+      .about-text p{font-size:17px}
+      .about-text .lead{font-size:20px}
+      .project-main>p{font-size:17px}
+    }
+  </style>
+</head>
+<body>
+  <canvas id="pixel-bg" aria-hidden="true"></canvas>
+
+  <header class="topbar noise-overlay">
+    <a class="wordmark" href="#top" aria-label="Reza Helaleh home">RH<span>.</span></a>
+    <nav aria-label="Main navigation">
+      <a class="mono" href="#about" data-i18n="nav_about">ABOUT</a>
+      <a class="mono" href="#work" data-i18n="nav_work">WORK</a>
+      <a class="mono" href="#stack" data-i18n="nav_stack">STACK</a>
+      <a class="mono" href="#contact" data-i18n="nav_contact">CONTACT</a>
+    </nav>
+    <div style="display:flex;align-items:center;gap:18px">
+      <div class="lang-toggle" role="group" aria-label="Language switcher">
+        <button type="button" id="btn-en" class="active" onclick="setLang('en')">EN</button>
+        <button type="button" id="btn-fa" onclick="setLang('fa')">FA</button>
+      </div>
+      <a class="top-cta mono" href="#contact" data-i18n="nav_cta">LET'S TALK ↗</a>
+    </div>
+  </header>
+
+  <main>
+    <section class="hero noise-overlay" id="top">
+      <div class="hero-kicker mono reveal">
+        <span class="status-dot"></span>
+        <span data-i18n="hero_kicker">FULL-STACK DEVELOPER</span>
+        <span> / </span>
+        <span data-i18n="hero_location">IRAN</span>
+      </div>
+      <div class="hero-grid">
+        <div class="hero-copy">
+          <p class="eyebrow mono reveal" data-i18n="hero_eyebrow">INDEPENDENT THINKER. PRACTICAL BUILDER.</p>
+          <h1 class="reveal" data-i18n-html="hero_title">I BUILD<br>DIGITAL<br><span>EXPERIENCES.</span></h1>
+          <div class="hero-bottom reveal">
+            <p data-i18n="hero_desc">I'm Reza Helaleh — a full-stack developer focused on turning ideas into useful, well-crafted digital products.</p>
+            <a class="round-link" href="#about" aria-label="Scroll to about">↘</a>
+          </div>
+        </div>
+        <div class="portrait-wrap reveal-right">
+          <div class="portrait-frame">
+            <div class="pixel-border" aria-hidden="true">
+              <span class="pb-tl"></span><span class="pb-tl2"></span>
+              <span class="pb-tr"></span><span class="pb-tr2"></span>
+              <span class="pb-bl"></span><span class="pb-bl2"></span>
+              <span class="pb-br"></span><span class="pb-br2"></span>
+            </div>
+            <img class="portrait" src="https://s25.uupload.ir/files/spoonermonk/me/1791637417194.jpg" alt="Reza Helaleh">
+            <div class="portrait-index mono">FIG. 01 — REZA HELALEH</div>
+          </div>
+          <div class="side-note mono" data-i18n="hero_side">DESIGN MINDED / CODE DRIVEN</div>
+        </div>
+      </div>
+      <div class="hero-meta mono reveal">
+        <div><strong>04</strong><span data-i18n="meta_exp">YEARS OF EXPERIENCE</span></div>
+        <div><strong data-i18n="meta_stack">FULL</strong><span data-i18n="meta_stack_label">STACK DEVELOPMENT</span></div>
+        <div><strong data-i18n="meta_product">WEB / APP</strong><span data-i18n="meta_product_label">PRODUCT DEVELOPMENT</span></div>
+        <a href="#work" data-i18n="meta_explore">EXPLORE SELECTED WORK ↘</a>
+      </div>
+    </section>
+
+    <section class="about section-pad noise-overlay" id="about">
+      <div class="section-label mono reveal"><span>01</span><span data-i18n="about_label">A LITTLE ABOUT ME</span></div>
+      <div class="about-grid">
+        <h2 class="reveal-left" data-i18n-html="about_title">GOOD SOFTWARE<br>IS <span>MORE THAN</span><br>GOOD CODE.</h2>
+        <div class="about-text reveal-right">
+          <p class="lead" data-i18n="about_lead">I work across the stack — from interface and experience to application logic, APIs and deployment.</p>
+          <p data-i18n="about_p">Over the past four years, I've worked with different technologies and product types, taking ideas from early requirements to real, usable websites and applications. I value clarity, maintainability and solving the actual problem.</p>
+          <div class="about-facts">
+            <div><span data-i18n="fact1_label">01 / ROLE</span><strong data-i18n="fact1_value">Full-Stack Developer</strong></div>
+            <div><span data-i18n="fact2_label">02 / FOCUS</span><strong data-i18n="fact2_value">Web & Digital Products</strong></div>
+            <div><span data-i18n="fact3_label">03 / APPROACH</span><strong data-i18n="fact3_value">Practical · End-to-End</strong></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="work section-pad" id="work">
+      <div class="section-label mono reveal"><span>02</span><span data-i18n="work_label">SELECTED WORK</span></div>
+      <div class="section-heading">
+        <h2 class="reveal" data-i18n-html="work_title">MADE TO<br><span>WORK IN THE REAL WORLD.</span></h2>
+        <p class="reveal" data-i18n="work_intro">A selection of projects and digital experiences I've worked on.</p>
+      </div>
+      <article class="project reveal">
+        <div class="project-number mono">01</div>
+        <div class="project-main">
+          <div class="project-type mono" data-i18n="p1_type">WEBSITE · BEAUTY & WELLNESS · SHIRAZ</div>
+          <h3 data-i18n="p1_name">Tandis Beauty Center</h3>
+          <p data-i18n="p1_desc">Designed and developed from the ground up — a dedicated digital presence for a beauty center in Shiraz, covering the website experience, interface implementation and content management setup.</p>
+          <div class="tag-list mono"><span>Nuxt.js</span><span>Strapi</span><span>UI / UX</span><span>Full-Stack Development</span></div>
+        </div>
+        <div class="project-action"><a href="https://tandisbeautycenter.com" target="_blank" rel="noopener noreferrer" data-i18n="visit">VISIT WEBSITE ↗</a></div>
+      </article>
+      <article class="project reveal">
+        <div class="project-number mono">02</div>
+        <div class="project-main">
+          <div class="project-type mono" data-i18n="p2_type">UNIVERSITY WEBSITE · COLLABORATIVE PROJECT</div>
+          <h3 data-i18n="p2_name">Petroleum University of Technology</h3>
+          <p data-i18n="p2_desc">Contributed to the university website project in collaboration with Douran Company. Involved in website administration, development and digital content improvements.</p>
+          <div class="tag-list mono"><span>put.ac.ir</span><span>Douran Company</span><span>Web Development</span></div>
+        </div>
+        <div class="project-action"><a href="https://put.ac.ir" target="_blank" rel="noopener noreferrer" data-i18n="visit">VISIT WEBSITE ↗</a></div>
+      </article>
+    </section>
+
+    <section class="stack section-pad noise-overlay" id="stack">
+      <div class="section-label mono reveal"><span>03</span><span data-i18n="stack_label">TOOLS OF THE TRADE</span></div>
+      <div class="section-heading stack-heading">
+        <h2 class="reveal" data-i18n-html="stack_title">THE RIGHT TOOL.<br><span>FOR THE RIGHT JOB.</span></h2>
+        <p class="reveal" data-i18n="stack_intro">Technologies used across professional work and personal projects.</p>
+      </div>
+      <div class="stack-grid">
+        <div class="stack-group reveal">
+          <span class="stack-index mono">01</span>
+          <h3 data-i18n="stack_fe">FRONTEND</h3>
+          <div class="stack-items"><span>JavaScript</span><span>TypeScript</span><span>React</span><span>Next.js</span><span>Vue.js</span><span>Nuxt.js</span><span>Angular</span></div>
+        </div>
+        <div class="stack-group reveal">
+          <span class="stack-index mono">02</span>
+          <h3 data-i18n="stack_be">BACKEND</h3>
+          <div class="stack-items"><span>Node.js</span><span>Express.js</span><span>NestJS</span><span>REST APIs</span></div>
+        </div>
+        <div class="stack-group reveal">
+          <span class="stack-index mono">03</span>
+          <h3 data-i18n="stack_mobile">MOBILE & DESKTOP</h3>
+          <div class="stack-items"><span>Flutter</span><span>React Native</span><span>Ionic</span><span>Electron</span></div>
+        </div>
+        <div class="stack-group reveal">
+          <span class="stack-index mono">04</span>
+          <h3 data-i18n="stack_cms">CMS & DESIGN</h3>
+          <div class="stack-items"><span>WordPress</span><span>Strapi</span><span>UI / UX</span><span>Responsive Design</span></div>
+        </div>
+      </div>
+      <p class="stack-note mono reveal" data-i18n="stack_note">TECHNOLOGIES SHOWN REFLECT HANDS-ON EXPOSURE ACROSS PROJECTS; EXPERIENCE LEVEL VARIES BY TOOL.</p>
+    </section>
+
+    <section class="experience section-pad noise-overlay">
+      <div class="section-label mono reveal"><span>04</span><span data-i18n="exp_label">EXPERIENCE & EDUCATION</span></div>
+      <div class="timeline">
+        <div class="timeline-row reveal">
+          <div class="timeline-date mono" data-i18n="exp_pro">PROFESSIONAL EXPERIENCE</div>
+          <div class="timeline-content">
+            <span class="timeline-kind mono" data-i18n="exp1_kind">WEB DEVELOPMENT / WEBSITE ADMINISTRATION</span>
+            <h3 data-i18n="exp1_title">Petroleum University of Technology</h3>
+            <p data-i18n="exp1_desc">Website administration and web development, including maintaining and improving university web pages and digital content. University website project carried out in collaboration with Douran Company.</p>
+          </div>
+          <div class="timeline-side mono">IRAN</div>
+        </div>
+        <div class="timeline-row reveal">
+          <div class="timeline-date mono" data-i18n="exp_edu">EDUCATION</div>
+          <div class="timeline-content">
+            <span class="timeline-kind mono" data-i18n="exp2_kind">BACHELOR'S DEGREE</span>
+            <h3 data-i18n="exp2_title">Software Engineering</h3>
+            <p data-i18n="exp2_desc">Islamic Azad University — Abadan Branch</p>
+          </div>
+          <div class="timeline-side mono">B.SC.</div>
+        </div>
+      </div>
+    </section>
+
+    <section class="contact section-pad noise-overlay" id="contact">
+      <div class="section-label mono reveal"><span>05</span><span data-i18n="contact_label">HAVE A PROJECT IN MIND?</span></div>
+      <div class="contact-main">
+        <h2 class="reveal" data-i18n-html="contact_title">LET'S MAKE<br><span>IT HAPPEN.</span></h2>
+        <a class="contact-link reveal" href="mailto:m.493434@gmail.com" data-i18n="contact_cta">GET IN TOUCH ↗</a>
+      </div>
+      <div class="contact-bottom reveal">
+        <p data-i18n="contact_note">Open to meaningful projects, collaborations and new opportunities.</p>
+        <div class="socials mono">
+          <a href="https://t.me/Reza_helale" target="_blank" rel="noopener noreferrer">TELEGRAM ↗</a>
+          <a href="https://instagram.com/reza_helale" target="_blank" rel="noopener noreferrer">INSTAGRAM ↗</a>
+          <a href="mailto:m.493434@gmail.com">EMAIL ↗</a>
+          <a href="tel:+989397929361">09397929361</a>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="noise-overlay">
+    <a class="wordmark" href="#top">RH<span>.</span></a>
+    <span data-i18n="footer_credit">DESIGNED & BUILT BY REZA HELALEH</span>
+    <span>© 2026 — ALL RIGHTS RESERVED</span>
+    <a href="#top" data-i18n="footer_top">BACK TO TOP ↑</a>
+  </footer>
+
+  <script>
+    (function(){
+      const canvas = document.getElementById('pixel-bg');
+      const ctx = canvas.getContext('2d');
+      let w, h, pixels = [];
+      const PIXEL_SIZE = 5;
+      const COUNT = 120;
+
+      function resize(){
+        w = canvas.width = window.innerWidth;
+        h = canvas.height = window.innerHeight;
+        initPixels();
+      }
+
+      function initPixels(){
+        pixels = [];
+        for(let i=0;i<COUNT;i++){
+          pixels.push({
+            x: Math.random()*w,
+            y: Math.random()*h,
+            size: PIXEL_SIZE + Math.floor(Math.random()*4),
+            vx: (Math.random()-0.5)*0.45,
+            vy: (Math.random()-0.5)*0.45,
+            alpha: 0.18 + Math.random()*0.5,
+            pulse: Math.random()*Math.PI*2,
+            pulseSpeed: 0.01 + Math.random()*0.018
+          });
+        }
+      }
+
+      function draw(){
+        ctx.clearRect(0,0,w,h);
+        const globalPulse = 0.55 + Math.sin(Date.now()*0.00055)*0.35;
+
+        for(const p of pixels){
+          p.x += p.vx;
+          p.y += p.vy;
+          p.pulse += p.pulseSpeed;
+
+          if(p.x < -12) p.x = w+12;
+          if(p.x > w+12) p.x = -12;
+          if(p.y < -12) p.y = h+12;
+          if(p.y > h+12) p.y = -12;
+
+          const a = p.alpha * (0.5 + Math.sin(p.pulse)*0.5) * globalPulse;
+          ctx.fillStyle = 'rgba(210,210,200,'+a+')';
+          const px = Math.floor(p.x / p.size) * p.size;
+          const py = Math.floor(p.y / p.size) * p.size;
+          ctx.fillRect(px, py, p.size, p.size);
+        }
+        requestAnimationFrame(draw);
+      }
+
+      window.addEventListener('resize', resize);
+      resize();
+      draw();
+    })();
+
+    gsap.registerPlugin(ScrollTrigger);
+
+    gsap.from('.topbar', {y:-50, opacity:0, duration:0.9, ease:'power3.out'});
+
+    gsap.to('.hero .reveal, .hero .reveal-right', {
+      opacity:1, y:0, x:0, duration:1, stagger:0.14, ease:'power3.out', delay:0.3
+    });
+
+    document.querySelectorAll('.reveal, .reveal-left, .reveal-right').forEach((el)=>{
+      if(el.closest('.hero')) return;
+      const fromX = el.classList.contains('reveal-left') ? -40 :
+                    el.classList.contains('reveal-right') ? 40 : 0;
+      gsap.fromTo(el,
+        {opacity:0, y: fromX===0 ? 40 : 0, x: fromX},
+        {
+          opacity:1, y:0, x:0, duration:0.95, ease:'power3.out',
+          scrollTrigger:{trigger:el, start:'top 87%', toggleActions:'play none none none'}
+        }
+      );
+    });
+
+    gsap.to('.contact-link', {
+      textShadow:'0 0 22px rgba(244,244,241,0.35)',
+      duration:2, repeat:-1, yoyo:true, ease:'sine.inOut'
+    });
+
+    gsap.utils.toArray('.stack-items span').forEach((tag, i)=>{
+      gsap.to(tag, {
+        y:-3, duration:1.6+(i%5)*0.2, repeat:-1, yoyo:true, ease:'sine.inOut', delay:i*0.08
+      });
+    });
+
+    const translations = {
+      en: {
+        nav_about:"ABOUT", nav_work:"WORK", nav_stack:"STACK", nav_contact:"CONTACT", nav_cta:"LET'S TALK ↗",
+        hero_kicker:"FULL-STACK DEVELOPER", hero_location:"IRAN",
+        hero_eyebrow:"INDEPENDENT THINKER. PRACTICAL BUILDER.",
+        hero_title:"I BUILD<br>DIGITAL<br><span>EXPERIENCES.</span>",
+        hero_desc:"I'm Reza Helaleh — a full-stack developer focused on turning ideas into useful, well-crafted digital products.",
+        hero_side:"DESIGN MINDED / CODE DRIVEN",
+        meta_exp:"YEARS OF EXPERIENCE", meta_stack:"FULL", meta_stack_label:"STACK DEVELOPMENT",
+        meta_product:"WEB / APP", meta_product_label:"PRODUCT DEVELOPMENT", meta_explore:"EXPLORE SELECTED WORK ↘",
+        about_label:"A LITTLE ABOUT ME",
+        about_title:"GOOD SOFTWARE<br>IS <span>MORE THAN</span><br>GOOD CODE.",
+        about_lead:"I work across the stack — from interface and experience to application logic, APIs and deployment.",
+        about_p:"Over the past four years, I've worked with different technologies and product types, taking ideas from early requirements to real, usable websites and applications. I value clarity, maintainability and solving the actual problem.",
+        fact1_label:"01 / ROLE", fact1_value:"Full-Stack Developer",
+        fact2_label:"02 / FOCUS", fact2_value:"Web & Digital Products",
+        fact3_label:"03 / APPROACH", fact3_value:"Practical · End-to-End",
+        work_label:"SELECTED WORK",
+        work_title:"MADE TO<br><span>WORK IN THE REAL WORLD.</span>",
+        work_intro:"A selection of projects and digital experiences I've worked on.",
+        p1_type:"WEBSITE · BEAUTY & WELLNESS · SHIRAZ", p1_name:"Tandis Beauty Center",
+        p1_desc:"Designed and developed from the ground up — a dedicated digital presence for a beauty center in Shiraz, covering the website experience, interface implementation and content management setup.",
+        p2_type:"UNIVERSITY WEBSITE · COLLABORATIVE PROJECT", p2_name:"Petroleum University of Technology",
+        p2_desc:"Contributed to the university website project in collaboration with Douran Company. Involved in website administration, development and digital content improvements.",
+        visit:"VISIT WEBSITE ↗",
+        stack_label:"TOOLS OF THE TRADE",
+        stack_title:"THE RIGHT TOOL.<br><span>FOR THE RIGHT JOB.</span>",
+        stack_intro:"Technologies used across professional work and personal projects.",
+        stack_fe:"FRONTEND", stack_be:"BACKEND", stack_mobile:"MOBILE & DESKTOP", stack_cms:"CMS & DESIGN",
+        stack_note:"TECHNOLOGIES SHOWN REFLECT HANDS-ON EXPOSURE ACROSS PROJECTS; EXPERIENCE LEVEL VARIES BY TOOL.",
+        exp_label:"EXPERIENCE & EDUCATION", exp_pro:"PROFESSIONAL EXPERIENCE",
+        exp1_kind:"WEB DEVELOPMENT / WEBSITE ADMINISTRATION", exp1_title:"Petroleum University of Technology",
+        exp1_desc:"Website administration and web development, including maintaining and improving university web pages and digital content. University website project carried out in collaboration with Douran Company.",
+        exp_edu:"EDUCATION", exp2_kind:"BACHELOR'S DEGREE", exp2_title:"Software Engineering",
+        exp2_desc:"Islamic Azad University — Abadan Branch",
+        contact_label:"HAVE A PROJECT IN MIND?",
+        contact_title:"LET'S MAKE<br><span>IT HAPPEN.</span>",
+        contact_cta:"GET IN TOUCH ↗",
+        contact_note:"Open to meaningful projects, collaborations and new opportunities.",
+        footer_credit:"DESIGNED & BUILT BY REZA HELALEH", footer_top:"BACK TO TOP ↑"
+      },
+      fa: {
+        nav_about:"درباره من", nav_work:"کارها", nav_stack:"تکنولوژی‌ها", nav_contact:"تماس", nav_cta:"بیا حرف بزنیم ↗",
+        hero_kicker:"توسعه‌دهنده فول‌استک", hero_location:"ایران",
+        hero_eyebrow:"فکر مستقل. سازنده عملی.",
+        hero_title:"من می‌سازم<br>تجربه‌های<br><span>دیجیتال.</span>",
+        hero_desc:"من رضا هلاله‌ام — توسعه‌دهنده فول‌استک که روی تبدیل ایده‌ها به محصولات دیجیتال کاربردی و خوش‌ساخت تمرکز دارم.",
+        hero_side:"طراحی‌محور / کد‌محور",
+        meta_exp:"سال تجربه", meta_stack:"فول", meta_stack_label:"توسعه استک",
+        meta_product:"وب / اپ", meta_product_label:"توسعه محصول", meta_explore:"مشاهده کارهای منتخب ↘",
+        about_label:"کمی درباره من",
+        about_title:"نرم‌افزار خوب<br>فقط <span>کد خوب</span><br>نیست.",
+        about_lead:"من در کل استک کار می‌کنم — از رابط کاربری و تجربه کاربری تا منطق برنامه، APIها و استقرار.",
+        about_p:"در چهار سال گذشته با تکنولوژی‌ها و انواع مختلف محصول کار کرده‌ام و ایده‌ها را از نیازمندی‌های اولیه تا وب‌سایت‌ها و اپلیکیشن‌های واقعی و قابل استفاده رسانده‌ام. به وضوح، نگهداری‌پذیری و حل مشکل واقعی اهمیت می‌دهم.",
+        fact1_label:"۰۱ / نقش", fact1_value:"توسعه‌دهنده فول‌استک",
+        fact2_label:"۰۲ / تمرکز", fact2_value:"وب و محصولات دیجیتال",
+        fact3_label:"۰۳ / رویکرد", fact3_value:"عملی · سرتاسری",
+        work_label:"کارهای منتخب",
+        work_title:"ساخته شده برای<br><span>دنیای واقعی.</span>",
+        work_intro:"گزیده‌ای از پروژه‌ها و تجربه‌های دیجیتالی که روی آن‌ها کار کرده‌ام.",
+        p1_type:"وب‌سایت · زیبایی و سلامت · شیراز", p1_name:"مرکز زیبایی تندیس",
+        p1_desc:"از صفر طراحی و توسعه شده — حضور دیجیتال اختصاصی برای یک مرکز زیبایی در شیراز، شامل تجربه وب‌سایت، پیاده‌سازی رابط کاربری و راه‌اندازی سیستم مدیریت محتوا.",
+        p2_type:"وب‌سایت دانشگاه · پروژه مشارکتی", p2_name:"دانشگاه صنعت نفت",
+        p2_desc:"همکاری در پروژه وب‌سایت دانشگاه به همراه شرکت دوران. مشارکت در مدیریت وب‌سایت، توسعه و بهبود محتوای دیجیتال.",
+        visit:"مشاهده وب‌سایت ↗",
+        stack_label:"ابزارهای کار",
+        stack_title:"ابزار درست.<br><span>برای کار درست.</span>",
+        stack_intro:"تکنولوژی‌هایی که در کارهای حرفه‌ای و پروژه‌های شخصی استفاده کرده‌ام.",
+        stack_fe:"فرانت‌اند", stack_be:"بک‌اند", stack_mobile:"موبایل و دسکتاپ", stack_cms:"CMS و طراحی",
+        stack_note:"تکنولوژی‌های نمایش‌داده‌شده نشان‌دهنده تجربه عملی در پروژه‌ها هستند؛ سطح تجربه در هر ابزار متفاوت است.",
+        exp_label:"تجربه و تحصیلات", exp_pro:"تجربه حرفه‌ای",
+        exp1_kind:"توسعه وب / مدیریت وب‌سایت", exp1_title:"دانشگاه صنعت نفت",
+        exp1_desc:"مدیریت وب‌سایت و توسعه وب، شامل نگهداری و بهبود صفحات وب دانشگاه و محتوای دیجیتال. پروژه وب‌سایت دانشگاه با همکاری شرکت دوران انجام شده است.",
+        exp_edu:"تحصیلات", exp2_kind:"کارشناسی", exp2_title:"مهندسی نرم‌افزار",
+        exp2_desc:"دانشگاه آزاد اسلامی — واحد آبادان",
+        contact_label:"پروژه‌ای در ذهن داری؟",
+        contact_title:"بیایید<br><span>انجامش دهیم.</span>",
+        contact_cta:"تماس بگیر ↗",
+        contact_note:"آماده همکاری در پروژه‌های معنادار، همکاری‌ها و فرصت‌های جدید.",
+        footer_credit:"طراحی و ساخت توسط رضا هلاله", footer_top:"بازگشت به بالا ↑"
+      }
+    };
+
+    function setLang(lang) {
+      const t = translations[lang];
+      if (!t) return;
+      document.documentElement.lang = lang;
+      document.documentElement.dir = lang === 'fa' ? 'rtl' : 'ltr';
+      document.getElementById('btn-en').classList.toggle('active', lang === 'en');
+      document.getElementById('btn-fa').classList.toggle('active', lang === 'fa');
+      document.querySelectorAll('[data-i18n]').forEach(el => {
+        const key = el.getAttribute('data-i18n');
+        if (t[key] !== undefined) el.textContent = t[key];
+      });
+      document.querySelectorAll('[data-i18n-html]').forEach(el => {
+        const key = el.getAttribute('data-i18n-html');
+        if (t[key] !== undefined) el.innerHTML = t[key];
+      });
+      document.title = lang === 'fa' ? 'رضا هلاله — توسعه‌دهنده فول‌استک' : 'Reza Helaleh — Full-Stack Developer';
+      localStorage.setItem('portfolio-lang', lang);
+    }
+
+    const saved = localStorage.getItem('portfolio-lang');
+    if (saved === 'fa' || saved === 'en') setLang(saved);
+  </script>
+</body>
+</html>
